@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper  
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"  
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.stevezong.cloud_note.dao.NoteDao">
+	<!-- 通过 查询 -->
+	<select id="findByBookId" parameterType="String" resultType="Map">
+		SELECT cn_note_id,cn_note_title FROM cn_note WHERE
+		cn_notebook_id=#{bookId} AND cn_note_status_id='1' ORDER BY
+		cn_note_last_modify_time DESC
+	</select>
+
+	<select id="findByNoteId" parameterType="String"
+		resultType="com.stevezong.cloud_note.entity.Note">
+		SELECT * FROM cn_note WHERE cn_note_id=#{noteId}
+	</select>
+
+	<update id="updateNote222" parameterType="com.stevezong.cloud_note.entity.Note">
+		UPDATE cn_note SET
+		cn_notebook_id=#{cn_notebook_id},cn_user_id=#{cn_user_id},cn_note_status_id=#{cn_note_status_id},cn_note_type_id={cn_note_type_id},cn_note_title=#{cn_note_title},cn_note_body=#{cn_note_body},cn_note_create_time=#{cn_note_create_time},cn_note_last_modify_time=#{cn_note_last_modify_time}
+		WHERE cn_note_id=#{cn_note_id}
+	</update>
+	<update id="updateNote" parameterType="com.stevezong.cloud_note.entity.Note">
+		UPDATE cn_note
+		SET
+		cn_note_title=#{cn_note_title},
+		cn_note_body=#{cn_note_body},
+		cn_note_last_modify_time=#{cn_note_last_modify_time}
+		WHERE
+		cn_note_id=#{cn_note_id}
+	</update>
+
+
+	<insert id="save" parameterType="com.stevezong.cloud_note.entity.Note">
+		INSERT INTO cn_note
+		(cn_note_id,cn_notebook_id,cn_user_id,cn_note_status_id,cn_note_type_id,cn_note_title,cn_note_body,cn_note_create_time,cn_note_last_modify_time)
+		VALUES(#{cn_note_id},#{cn_notebook_id},#{cn_user_id},#{cn_note_status_id},#{cn_note_type_id},#{cn_note_title},#{cn_note_body},#{cn_note_create_time},#{cn_note_last_modify_time})
+	</insert>
+
+	<update id="delete" parameterType="String">
+			UPDATE cn_note
+			SET
+			cn_note_status_id=2
+			WHERE
+			cn_note_id=#{noteId}
+	</update>
+
+
+	<update id="updateNoteByMap" parameterType="map">
+		UPDATE 
+			cn_note
+		SET
+			<trim suffixOverrides=",">
+				<if test="title != null">
+				cn_note_title=#{title},
+				</if>
+				<if test="body != null">
+				cn_note_body=#{body},
+				</if>
+				<choose>
+					<when test="time != null">
+						cn_note_last_modify_time=#{time}
+					</when>
+					<otherwise>
+						cn_note_last_modify_time=UNIX_TIMESTAMP()
+					</otherwise>				
+				</choose>
+			</trim>
+		WHERE 
+			cn_note_id=#{noteId}
+	</update>
+	<delete id="deleteNotes" parameterType="map">
+		DELETE FROM cn_note
+		WHERE 
+			<if test="status != null">
+				cn_note_status_id=#{status} AND
+			</if>
+			cn_note_id IN
+			<foreach collection="ids" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+	</delete>
+</mapper>  

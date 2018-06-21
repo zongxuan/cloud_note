@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script type="text/javascript" src="scripts/jquery.min.js"></script>
+<script type="text/javascript">
+	function f1() {
+		$.ajax({
+			url:"test/t3.do",
+			type:"post",
+			data:{
+				"userId":"123",
+				"password":"321"
+			},
+			dataType:"json",
+			success:function(result){
+				alert(result);
+			},
+			error:function(){
+				alert("删除失败，请稍后重试");
+			}
+		});
+	}
+</script>
+</head>
+<body>
+	<input type="button" value="测试" onclick="f1()">
+	<form action="">
+		<input type="checkbox" name="a" value="b">123<br>
+		<input type="checkbox" name="a" value="b">1233<br>
+		<input type="submit">
+	</form>
+</body>
+</html>
